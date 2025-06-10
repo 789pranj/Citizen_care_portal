@@ -47,7 +47,7 @@ export default function Dashboard() {
               Here’s a quick overview of your complaint dashboard.
             </p>
           </div>
-          
+
         </div>
 
         {/* 🔹 Grid of Complaint Categories */}
@@ -75,6 +75,12 @@ export default function Dashboard() {
             icon={<FileText className="text-purple-700 w-8 h-8" />}
             bg="bg-purple-100"
             onClick={() => navigate("/all-complains")}
+          />
+          <Card
+            title="All Reminders"
+            icon={<UserCircle className="text-orange-600 w-8 h-8" />}
+            bg="bg-orange-100"  
+            onClick={() => navigate("/all-remainders")}
           />
         </div>
 

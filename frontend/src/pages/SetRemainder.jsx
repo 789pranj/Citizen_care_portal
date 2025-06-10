@@ -1,23 +1,42 @@
 import React, { useState } from "react";
-import { BellPlus, Hash, Mail, FileText, CalendarDays, Send } from "lucide-react";
+import axios from 'axios';
+import {
+  BellPlus,
+  User,
+  Phone,
+  FileText,
+  CalendarDays,
+  Send,
+} from "lucide-react";
 
 const SetRemainder = () => {
   const [form, setForm] = useState({
-    complaintId: "",
-    email: "",
+    name: "",
+    phone: "",
     message: "",
     date: "",
   });
+
+  const [status, setStatus] = useState("");
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    alert("✅ Reminder Set Successfully!");
-    setForm({ complaintId: "", email: "", message: "", date: "" });
-  };
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    await axios.post("http://localhost:5000/api/reminders/set", form);
+    setStatus("✅ Reminder Set Successfully!");
+    setForm({ name: "", phone: "", message: "", date: "" });
+  } catch (error) {
+    console.error("Error setting reminder:", error);
+    setStatus("❌ Failed to set reminder. Please try again.");
+  }
+
+  setTimeout(() => setStatus(""), 3000);
+};
 
   return (
     <div className="min-h-screen bg-yellow-50 flex items-center justify-center p-4">
@@ -30,28 +49,28 @@ const SetRemainder = () => {
           <h2 className="text-2xl font-bold">Set a Reminder</h2>
         </div>
 
-        {/* Complaint ID */}
+        {/* Name */}
         <div className="flex items-center border-2 border-yellow-300 rounded-xl px-4 py-3 transition focus-within:shadow-md">
-          <Hash className="text-yellow-500 mr-3" />
+          <User className="text-yellow-500 mr-3" />
           <input
             type="text"
-            name="complaintId"
-            placeholder="Complaint ID"
-            value={form.complaintId}
+            name="name"
+            placeholder="Your Name"
+            value={form.name}
             onChange={handleChange}
             className="w-full outline-none bg-transparent text-gray-700"
             required
           />
         </div>
 
-        {/* Email */}
+        {/* Phone Number */}
         <div className="flex items-center border-2 border-yellow-300 rounded-xl px-4 py-3 transition focus-within:shadow-md">
-          <Mail className="text-yellow-500 mr-3" />
+          <Phone className="text-yellow-500 mr-3" />
           <input
-            type="email"
-            name="email"
-            placeholder="Your Email"
-            value={form.email}
+            type="tel"
+            name="phone"
+            placeholder="Your Phone Number"
+            value={form.phone}
             onChange={handleChange}
             className="w-full outline-none bg-transparent text-gray-700"
             required
@@ -93,6 +112,11 @@ const SetRemainder = () => {
           <Send size={18} />
           Set Reminder
         </button>
+
+        {/* Status Message */}
+        {status && (
+          <p className="text-center text-green-600 font-medium">{status}</p>
+        )}
       </form>
     </div>
   );

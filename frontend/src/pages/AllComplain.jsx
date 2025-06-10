@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   ShieldCheck,
   Search,
@@ -34,53 +35,36 @@ const AllComplain = () => {
   ];
 
   useEffect(() => {
-    const dummyData = [
-      {
-        id: 1,
-        name: "Rahul Sharma",
-        phone: "1234567890",
-        category: "Water",
-        complaint: "No water supply for 3 days",
-        priority: "High",
-        location: "Lucknow",
-        status: "Pending",
-        summary:
-          "The main water pipeline has been damaged due to construction work.",
-      },
-      {
-        id: 2,
-        name: "Priya Verma",
-        phone: "9876543210",
-        category: "Electricity",
-        complaint: "Frequent power cuts",
-        priority: "Medium",
-        location: "Kanpur",
-        status: "In Progress",
-        summary:
-          "Maintenance work is ongoing to upgrade local transformers.",
-      },
-      {
-        id: 3,
-        name: "Aman Gupta",
-        phone: "7890123456",
-        category: "Sanitation",
-        complaint: "Garbage not collected",
-        priority: "Low",
-        location: "Noida",
-        status: "Resolved",
-        summary:
-          "A special cleanup drive was conducted last week in the area.",
-      },
-    ];
-    setComplaints(dummyData);
+    const fetchComplaints = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/complain/all-complaints");
+        setComplaints(res.data);
+      } catch (error) {
+        console.error("Failed to fetch complaints:", error);
+      }
+    };
+
+    fetchComplaints();
   }, []);
+
+  const handleStatusUpdate = async (id, newStatus) => {
+    try {
+      await axios.put(`http://localhost:5000/api/complain/update-status/${id}`, {
+        status: newStatus,
+      });
+
+      setComplaints((prev) =>
+        prev.map((c) => (c._id === id ? { ...c, status: newStatus } : c))
+      );
+    } catch (error) {
+      console.error("Status update failed:", error);
+    }
+  };
 
   const filtered = complaints
     .filter((c) => (category ? c.category === category : true))
     .filter((c) => (statusFilter ? c.status === statusFilter : true))
-    .filter((c) =>
-      c.name.toLowerCase().includes(searchName.toLowerCase().trim())
-    )
+    .filter((c) => c.name.toLowerCase().includes(searchName.toLowerCase().trim()))
     .sort((a, b) => {
       if (!sortPriority) return 0;
       const priorityMap = { High: 3, Medium: 2, Low: 1 };
@@ -115,6 +99,8 @@ const AllComplain = () => {
         color = "bg-gray-100 text-gray-600";
         icon = <Flame className="w-4 h-4 mr-1" />;
         break;
+      default:
+        return null;
     }
     return (
       <span className={`flex items-center text-xs px-2 py-1 rounded-full font-medium ${color}`}>
@@ -191,28 +177,35 @@ const AllComplain = () => {
         <div className="grid gap-4">
           {filtered.map((c) => (
             <div
-              key={c.id}
+              key={c._id}
               className="border border-green-300 rounded-xl p-4 shadow-sm bg-green-50"
             >
               <div className="flex justify-between items-center mb-1">
                 <h3 className="text-lg font-semibold text-green-700">
                   {c.name} ({c.phone})
                 </h3>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3">
                   {getPriorityTag(c.priority)}
-                  {getStatusTag(c.status)}
+
+                  <div className="flex items-center gap-2">
+                    {getStatusTag(c.status)}
+                    <select
+                      value={c.status}
+                      onChange={(e) => handleStatusUpdate(c._id, e.target.value)}
+                      className="text-xs bg-white border border-green-300 rounded px-2 py-1 outline-none"
+                    >
+                      <option value="Pending">Pending</option>
+                      <option value="In Progress">In Progress</option>
+                      <option value="Resolved">Resolved</option>
+                    </select>
+                  </div>
                 </div>
               </div>
-              <p className="text-sm text-gray-700 mb-1">
-                <b>Category:</b> {c.category}
-              </p>
-              <p className="text-sm text-gray-700 mb-1">
-                <b>Location:</b> {c.location}
-              </p>
+
+              <p className="text-sm text-gray-700 mb-1"><b>Category:</b> {c.category}</p>
+              <p className="text-sm text-gray-700 mb-1"><b>Location:</b> {c.location}</p>
               <p className="text-sm text-gray-800 italic mb-1">“{c.complaint}”</p>
-              <p className="text-sm text-green-900">
-                <b>Summary:</b> {c.summary}
-              </p>
+              <p className="text-sm text-green-900"><b>Summary:</b> {c.summary}</p>
             </div>
           ))}
         </div>

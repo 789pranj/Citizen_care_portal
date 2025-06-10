@@ -7,6 +7,7 @@ import {
   FileText,
   Image as ImageIcon,
   Send,
+  CheckCircle,
 } from "lucide-react";
 
 const Complain = () => {
@@ -17,6 +18,8 @@ const Complain = () => {
     complaint: "",
     file: null,
   });
+
+  const [success, setSuccess] = useState(false);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -30,20 +33,34 @@ const Complain = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const data = new FormData();
-    data.append("name", formData.name);
-    data.append("phone", formData.phone);
-    data.append("location", formData.location);
-    data.append("complaint", formData.complaint);
-    if (formData.file) {
-      data.append("file", formData.file);
-    }
-
     try {
-      // Replace with your backend API
-      console.log("FormData ready to send:", [...data.entries()]);
-      alert("✅ Complaint ready to be submitted (API not connected)");
+      const classifyRes = await axios.post("http://localhost:8000/classify", {
+        complaint: formData.complaint,
+      });
 
+      const cleaned = classifyRes.data.result.replace(/```json|```/g, "").trim();
+      const parsed = JSON.parse(cleaned);
+
+      const { category, priority } = parsed;
+
+      const complaintPayload = {
+        name: formData.name,
+        phone: formData.phone,
+        location: formData.location,
+        complaint: formData.complaint,
+        category,
+        priority,
+        summary: formData.complaint,
+        status: "Pending",
+      };
+
+      await axios.post(
+        "http://localhost:5000/api/complain/submit-complaint",
+        complaintPayload
+      );
+
+      // ✅ Success UI logic
+      setSuccess(true);
       setFormData({
         name: "",
         phone: "",
@@ -51,14 +68,16 @@ const Complain = () => {
         complaint: "",
         file: null,
       });
+
+      // Hide success after 4s
+      setTimeout(() => setSuccess(false), 4000);
     } catch (error) {
-      console.error("❌ Error submitting complaint:", error);
-      alert("🚫 Submission failed");
+      console.log(error);
     }
   };
 
   return (
-    <div className="min-h-screen bg-green-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-green-50 flex items-center justify-center p-4 relative">
       <form
         onSubmit={handleSubmit}
         className="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-2xl space-y-6"
@@ -67,47 +86,26 @@ const Complain = () => {
           Citizen Complaint Portal
         </h2>
 
-        {/* Name */}
-        <div className="flex items-center border-2 border-green-300 rounded-xl px-4 py-3 transition focus-within:shadow-md">
-          <User className="text-green-500 mr-3" />
-          <input
-            type="text"
-            name="name"
-            placeholder="Your Name"
-            value={formData.name}
-            onChange={handleChange}
-            className="w-full outline-none bg-transparent text-gray-700"
-            required
-          />
-        </div>
-
-        {/* Phone */}
-        <div className="flex items-center border-2 border-green-300 rounded-xl px-4 py-3 transition focus-within:shadow-md">
-          <Phone className="text-green-500 mr-3" />
-          <input
-            type="tel"
-            name="phone"
-            placeholder="Phone Number"
-            value={formData.phone}
-            onChange={handleChange}
-            className="w-full outline-none bg-transparent text-gray-700"
-            required
-          />
-        </div>
-
-        {/* Location */}
-        <div className="flex items-center border-2 border-green-300 rounded-xl px-4 py-3 transition focus-within:shadow-md">
-          <MapPin className="text-green-500 mr-3" />
-          <input
-            type="text"
-            name="location"
-            placeholder="Your Location"
-            value={formData.location}
-            onChange={handleChange}
-            className="w-full outline-none bg-transparent text-gray-700"
-            required
-          />
-        </div>
+        {/* Inputs (Name, Phone, Location) */}
+        {["name", "phone", "location"].map((field, i) => (
+          <div
+            key={i}
+            className="flex items-center border-2 border-green-300 rounded-xl px-4 py-3 transition focus-within:shadow-md"
+          >
+            {field === "name" ? <User className="text-green-500 mr-3" /> :
+             field === "phone" ? <Phone className="text-green-500 mr-3" /> :
+             <MapPin className="text-green-500 mr-3" />}
+            <input
+              type={field === "phone" ? "tel" : "text"}
+              name={field}
+              placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+              value={formData[field]}
+              onChange={handleChange}
+              className="w-full outline-none bg-transparent text-gray-700"
+              required
+            />
+          </div>
+        ))}
 
         {/* Complaint */}
         <div className="flex items-start border-2 border-green-300 rounded-xl px-4 py-3 transition focus-within:shadow-md">
@@ -123,7 +121,7 @@ const Complain = () => {
           ></textarea>
         </div>
 
-        {/* File Upload */}
+        {/* Optional File Upload */}
         <div className="flex items-center border-2 border-green-300 rounded-xl px-4 py-3">
           <ImageIcon className="text-green-500 mr-3" />
           <input
@@ -144,6 +142,14 @@ const Complain = () => {
           Submit Complaint
         </button>
       </form>
+
+      {/* ✅ Success Message */}
+      {success && (
+        <div className="absolute top-6 right-6 bg-green-100 text-green-800 px-6 py-3 rounded-xl shadow-lg flex items-center gap-3 animate-fade-in">
+          <CheckCircle className="w-5 h-5 text-green-600" />
+          Complaint submitted successfully!
+        </div>
+      )}
     </div>
   );
 };

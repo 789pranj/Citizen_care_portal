@@ -4,6 +4,9 @@ import authRoute from './routes/auth.route.js';
 import { connectDB } from "./lib/db.js";
 import cors from 'cors';
 import cookieParser from "cookie-parser";
+import complainRoute from './routes/complain.route.js'
+import feedbackRoute from './routes/feedback.route.js';
+import reminderRoutes from "./routes/reminder.route.js";
 
 dotenv.config();
 
@@ -20,6 +23,9 @@ app.use(express.json());
 
 // Routes
 app.use("/api/auth", authRoute);
+app.use("/api/complain", complainRoute); 
+app.use("/api/feedback", feedbackRoute);
+app.use("/api/reminders", reminderRoutes);
 
 
 // Start Server

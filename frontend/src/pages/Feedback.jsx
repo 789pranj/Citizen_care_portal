@@ -24,9 +24,7 @@ const Feedback = () => {
     setStatus("");
 
     try {
-      // ✅ ADD YOUR FEEDBACK API ENDPOINT HERE
-      // Example: await axios.post("/api/feedback", form);
-
+      await axios.post("http://localhost:5000/api/feedback/submit-feedback", form);
       console.log("Feedback submitted:", form);
 
       // Simulate success
@@ -77,7 +75,7 @@ const Feedback = () => {
 
           {/* ⭐ Rating Slider */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1 flex items-center gap-1">
+            <label className="text-sm font-semibold text-gray-700 mb-1 flex items-center gap-1">
               <Star className="w-4 h-4 text-yellow-500" /> Rate us (1 to 10)
             </label>
             <div className="flex items-center gap-4">
@@ -97,20 +95,20 @@ const Feedback = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full text-white font-semibold py-2 rounded-md transition ${
-              loading
+            className={`w-full text-white font-semibold py-2 rounded-md transition ${loading
                 ? "bg-purple-400 cursor-not-allowed"
                 : "bg-purple-500 hover:bg-purple-600"
-            }`}
+              }`}
           >
             {loading ? "Submitting..." : "Submit Feedback"}
           </button>
 
           {status && (
-            <p className="text-center mt-2 text-sm font-medium text-green-600">
+            <div className="mt-4 w-full text-green-700 bg-green-100 border border-green-300 px-4 py-3 rounded-md text-sm animate-fade-in">
               {status}
-            </p>
+            </div>
           )}
+
         </form>
       </div>
     </div>

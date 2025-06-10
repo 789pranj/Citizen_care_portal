@@ -13,6 +13,8 @@ import AllComplain from "./pages/AllComplain";
 import LandingPage from "./pages/LandingPage";
 import SetRemainder from "./pages/SetRemainder";
 import Feedback from "./pages/Feedback";
+import ViewReminders from "./pages/ViewReminders";
+import AllFeedback from "./pages/AllFeedback";
 
 const App = () => {
   const setUser = useAuthStore((s) => s.setUser);
@@ -59,6 +61,7 @@ const App = () => {
           }
         />
 
+
         <Route
           path="/signup"
           element={
@@ -94,10 +97,28 @@ const App = () => {
         />
 
         <Route
+          path="/all-remainders"
+          element={
+            <ProtectedRoute>
+              <ViewReminders />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
           path="/Submit-complain"
           element={
             <PublicRoute>
               <Complain />
+            </PublicRoute>
+          }
+        />
+
+        <Route
+          path="/All-feedbacks"
+          element={
+            <PublicRoute>
+              <AllFeedback />
             </PublicRoute>
           }
         />

@@ -12,6 +12,8 @@ import {
   MessageCircleHeart,
   BellRing,
   FileWarning,
+  AngryIcon,
+  SmileIcon,
 } from "lucide-react";
 import { logout } from "../api/auth";
 
@@ -25,7 +27,7 @@ export default function Navbar() {
     clearUser();
     navigate("/login");
   };
-g
+
   return (
     <nav className="flex items-center justify-between px-8 py-4 bg-green-50 shadow-md sticky top-0 z-50 rounded-b-md border border-green-100">
       <div className="flex items-center space-x-3 text-green-700 font-extrabold text-xl select-none">
@@ -85,6 +87,14 @@ g
               <LogIn className="w-5 h-5" />
               <span>Login</span>
             </Link>
+
+            <Link
+              to="/all-feedbacks"
+              className="flex items-center space-x-1 px-4 py-2 rounded-md bg-white shadow-sm hover:bg-yellow-100 hover:text-yellow-900 transition-colors duration-200"
+            >
+              <SmileIcon className="w-5 h-5" />
+              <span>All Feedbacks</span>
+            </Link>
           </>
         ) : (
           <>
@@ -94,6 +104,14 @@ g
             >
               <HomeIcon className="w-5 h-5" />
               <span>Dashboard</span>
+            </Link>
+
+            <Link
+              to="/all-remainders"
+              className="flex items-center space-x-1 px-4 py-2 rounded-md bg-white shadow-sm hover:bg-orange-100 hover:text-orange-900 transition-colors duration-200"
+            >
+              <AngryIcon className="w-5 h-5" />
+              <span>Remainders</span>
             </Link>
 
             <Link
@@ -110,6 +128,14 @@ g
             >
               <AlarmClock className="w-5 h-5" />
               <span>All Complains</span>
+            </Link>
+
+            <Link
+              to="/all-feedbacks"
+              className="flex items-center space-x-1 px-4 py-2 rounded-md bg-white shadow-sm hover:bg-blue-100 hover:text-blue-900 transition-colors duration-200"
+            >
+              <SmileIcon className="w-5 h-5" />
+              <span>All Feedbacks</span>
             </Link>
 
             <button
