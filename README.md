@@ -8,20 +8,68 @@ This project implements an *AI-Powered Citizen Complaints Redressal System* that
 
 ## 🚀 Features
 
-1. *Complaint Classification*  
-   Automatically classifies citizen complaints into predefined categories based on various criteria.
+### 🧠 Backend
 
-2. *Retrieval Augmented Generation (RAG)*  
-   Enhances classification accuracy by retrieving and incorporating relevant historical complaint data.
+#### ⚙️ AI-Powered Backend (Python + FastAPI)
+- **Python** – Core language for AI/ML logic
+- **FastAPI** – High-performance, async-ready REST API
+- **Google Generative AI (Gemini Pro)** – Powerful model used for complaint categorization and response generation
+- **Retrieval Augmented Generation (RAG)** – Combines vector-based retrieval with generative responses to improve classification accuracy
+- **Sentence-Transformers** – Converts complaint text into meaningful vector embeddings
+- **Pandas** – Used for historical data analysis, feedback trends, and summary generation
+- **Custom Vector Store** – Optimized for fast retrieval of semantically similar complaints
+- **Text Preprocessing Pipeline** – For cleaning and preparing text (removing noise, punctuation, etc.)
 
-3. *Gemini Integration*  
-   Utilizes Google's state-of-the-art *Gemini-2.0-flash* model for robust natural language understanding and generation.
+#### 🔐 MERN Stack Backend (Node.js + Express + MongoDB)
+- **Node.js & Express.js** – RESTful API handling, middleware, and routing logic
+- **MongoDB with Mongoose** – For modeling and managing complaint, user, and feedback data
 
-4. *FastAPI Backend*  
-   Provides a high-performance, asynchronous API for seamless integration with front-end applications or other services.
+#### 🔒 Authentication & Authorization
+- **JWT-Based Auth** – Secure JSON Web Token implementation for user and admin login
+- **Role-Based Access Control (RBAC)** – Differentiates between user, admin, and department-level permissions
+- **bcrypt Password Hashing** – Ensures secure storage of user credentials
 
-5. *Vector Embeddings*  
-   Uses embeddings to find semantically similar complaints for context enhancement during classification.
+#### 📋 Complaint Management
+- Submit new complaint with: name, category, priority, location, summary
+- Admin can:
+  - View all complaints
+  - Filter by **status**, **priority**, **category**, and **name**
+  - Change the complaint **status** (Pending → In Progress → Resolved)
+- Complaints stored with sentiment metadata and AI-generated summaries (via Gemini)
+
+#### 📊 Feedback System
+- Users can submit feedback from the dashboard
+- Admin can view all feedbacks from a centralized panel
+- Feedback includes text, rating, and timestamps
+
+#### 🔍 Search & Filtering
+- API supports:
+  - Search by name or category
+  - Filter by status or priority
+  - Sort by priority (High > Medium > Low)
+- Pagination-ready endpoints for scalable UI
+
+#### 🛡️ Admin Panel APIs
+- Admin dashboard with:
+  - Total complaints overview
+  - Category-wise breakdown
+  - Recent feedback & complaint activity
+  - Complaint status updater
+- APIs return complaint metrics (total, resolved, pending)
+
+#### 🧪 Validation & Error Handling
+- Custom error responses for missing fields or invalid tokens
+- Global error handler middleware
+- Input validation using `express-validator`
+
+#### 🌐 CORS & API Security
+- CORS enabled for safe frontend-backend communication
+- Rate limiting and sanitization middleware (optional) for security
+
+#### 📦 Deployment-Ready
+- `.env` configuration for Mongo URI, JWT secret, and Gemini keys
+- Easily deployable on **Render**, **Vercel**, **Railway**, or **Heroku**
+
 
 ---
 
