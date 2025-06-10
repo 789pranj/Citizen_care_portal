@@ -4,7 +4,7 @@ This project implements an *AI-Powered Citizen Complaints Redressal System* that
 
 ---
 
-## Due tvery large size of model I am unable to upload it but i will bw uplaoding it very soon as I tackle the problem
+## Due to very large size of model I am unable to upload it but I will bw uplaoding it very soon as I tackle the problem
 
 ## 🚀 Features
 
