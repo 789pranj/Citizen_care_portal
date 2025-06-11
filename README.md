@@ -103,7 +103,6 @@ https://www.youtube.com/watch?v=zKNNgJNe6CQ
   - Users
   - Feedback
   - Admin logs
-- **Mongoose ODM** – For schema modeling and seamless database interaction
 - **Authentication & Authorization**:
   - JWT-based login/logout for users and admin
   - Role-based access control
